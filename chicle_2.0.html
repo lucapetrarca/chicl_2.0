@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué porcentaje sos de cada uno?</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ffe0f0, #c0eaff);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 2rem;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  .question {
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+    margin-top: 1rem;
+  }
+  .options button {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 0.7rem;
+    background: #ececec;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+  }
+  .options button:hover {
+    background: #d7f0ff;
+  }
+  #result {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.2rem;
+  }
+  #photo {
+    margin-top: 1rem;
+    width: 200px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  }
+</style>
+</head>
+<body>
+
+<h1>¿Qué porcentaje sos de cada uno?</h1>
+
+<div id="quiz"></div>
+<div id="result"></div>
+
+<script>
+const preguntas = [
+  {
+    texto: "¿Qué preferís hacer un domingo?",
+    opciones: [
+      { texto: "Ver una peli tranqui", puntos: { mio: 2, novia: 0 } },
+      { texto: "Salir a caminar", puntos: { mio: 1, novia: 1 } },
+      { texto: "Dormir todo el día", puntos: { mio: 0, novia: 2 } },
+      { texto: "Ir a tomar mates afuera", puntos: { mio: 1, novia: 1 } },
+    ]
+  },
+  {
+    texto: "¿Cuál elegís para cenar?",
+    opciones: [
+      { texto: "Pizza", puntos: { mio: 2, novia: 0 } },
+      { texto: "Sushi", puntos: { mio: 0, novia: 2 } },
+      { texto: "Pasta", puntos: { mio: 1, novia: 1 } },
+      { texto: "Hamburguesa", puntos: { mio: 1, novia: 1 } },
+    ]
+  },
+  // 👉 agregá hasta 10 preguntas en el mismo formato
+];
+
+let indice = 0;
+let puntajeMio = 0;
+let puntajeNovia = 0;
+
+const contenedor = document.getElementById("quiz");
+
+function mostrarPregunta() {
+  contenedor.innerHTML = "";
+  if (indice < preguntas.length) {
+    const q = preguntas[indice];
+    const div = document.createElement("div");
+    div.className = "question";
+    div.innerHTML = `<h3>${q.texto}</h3>`;
+    const opcionesDiv = document.createElement("div");
+    opcionesDiv.className = "options";
+    q.opciones.forEach(op => {
+      const btn = document.createElement("button");
+      btn.textContent = op.texto;
+      btn.onclick = () => {
+        puntajeMio += op.puntos.mio;
+        puntajeNovia += op.puntos.novia;
+        indice++;
+        mostrarPregunta();
+      };
+      opcionesDiv.appendChild(btn);
+    });
+    div.appendChild(opcionesDiv);
+    contenedor.appendChild(div);
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  const total = puntajeMio + puntajeNovia;
+  const porcMio = Math.round((puntajeMio / total) * 100);
+  const porcNovia = 100 - porcMio;
+  contenedor.innerHTML = "";
+  const resultado = document.getElementById("result");
+  resultado.innerHTML = `
+    <h2>Resultado:</h2>
+    <p>Sos ${porcMio}% vos y ${porcNovia}% tu novia ❤️</p>
+  `;
+  
+  const img = document.createElement("img");
+  img.id = "photo";
+  if (porcMio > 50) {
+    img.src = "foto_tuya.jpg"; // poné acá tu foto
+  } else {
+    img.src = "foto_novia.jpg"; // y acá la de ella
+  }
+  resultado.appendChild(img);
+}
+
+mostrarPregunta();
+</script>
+
+</body>
+</html>
